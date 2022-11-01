@@ -13,15 +13,9 @@
     
     .links{
         display: flex;
-        .link{
+        .buttonWrapper{
             width: 120px;
-            text-align: center;
-            color: white;
-            border-radius: 100px;
-            margin: 0 12px;
-            padding: 8px 8px;
-            background-color: #0043fc;
-            
+            margin: 4px;
         }
     }
 }

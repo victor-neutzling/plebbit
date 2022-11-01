@@ -1,4 +1,5 @@
 import React from 'react'
+import Button from '../Button'
 import styles from './Header.module.scss'
 
 export default function Header() {
@@ -8,8 +9,12 @@ export default function Header() {
             <h1>plebbit</h1>
         </div>
         <div className={styles.links}>
-            <a className={styles.link}>login</a>
-            <a className={styles.link}>register</a>
+          <div className={styles.buttonWrapper}>
+              <Button>login</Button>
+          </div>
+          <div className={styles.buttonWrapper}>
+              <Button>register</Button>
+          </div>
         </div>
     </div>
   )
