@@ -1,23 +1,53 @@
-import React from 'react'
+import firebase from 'firebase/compat/app'
+import React, { useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
+import FirebaseConnection from '../../common/utils/Firebase/firebaseConnection'
 
 import Button from '../Button'
 import styles from './Header.module.scss'
 
-export default function Header() {
+export default function Header(auth:any) {
+  const [user,setUser] = useState(localStorage.getItem('user'))
+  const navigate = useNavigate()
+
+  function handleSignOut(){
+    if(window.confirm('are you sure you want to sign out?')){
+      FirebaseConnection.signOut().then(
+        () =>{
+          setUser(localStorage.getItem('user'))
+          navigate('/')
+        }
+      )
+    }
+  }
 
   return (
     <div className={styles.header}>
         <div className={styles.logo}>
-            <h1 onClick={() => window.location.href='/'}>plebbit</h1>
+            <h1 onClick={() => navigate('/')} >plebbit</h1>
         </div>
         <div className={styles.links}>
-          <div className={styles.buttonWrapper}>
-              <Button>login</Button>
-          </div>
-          <div className={styles.buttonWrapper}>
-              <Button onClick={() => window.location.href='/register'}>register</Button>
-          </div>
+          {user ? (
+            <>
+              <Button onClick={handleSignOut}>log out</Button>
+            </>
+
+)
+          :
+           <>
+            <div className={styles.buttonWrapper}>
+              <Button onClick={() => navigate('/login')}>login</Button>
+            </div>
+            <div className={styles.buttonWrapper}>
+              <Button onClick={() => navigate('/register')} >register</Button>
+            </div>
+           </>
+          }
         </div>
     </div>
   )
 }
+function setState(currentUser: firebase.User | null): [any, any] {
+  throw new Error('Function not implemented.')
+}
+
