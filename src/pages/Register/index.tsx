@@ -18,6 +18,7 @@ export default function Register() {
     function handleSubmit(event: any) {
         event.preventDefault();
         FirebaseConnection.signUp(email, password).then(() => {
+            if(localStorage.getItem('user'))
             navigate("/");
         });
     }
