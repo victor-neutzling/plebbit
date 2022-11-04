@@ -29,7 +29,10 @@ export default function Header(auth:any) {
         <div className={styles.links}>
           {user ? (
             <>
-              <Button onClick={handleSignOut}>log out</Button>
+            <div className={styles.userwrapper}>
+              {JSON.parse(localStorage.getItem("user")as string).email}
+            </div>
+              <Button color='red' onClick={handleSignOut}>log out</Button>
             </>
 
 )

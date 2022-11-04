@@ -4,7 +4,6 @@
     background-color: white;
     box-sizing: border-box;
     margin: 8px;
- 
     box-shadow: 0 0 20px gray;
     border-radius: 24px;
     .sidebar{
@@ -15,7 +14,10 @@
         flex-direction: column;
         align-items: center;
         box-sizing: border-box;
-        padding-top: 24px;
+        padding: 24px 8px;
+        button{
+            margin: 4px;
+        }
     }
     .maincontent{
         display: flex;
@@ -37,6 +39,7 @@
         .titleWrapper{
             padding: 0 18px;
             h1{
+                font-weight: 400;
                 padding: 0;
                 margin: 0;
                 margin-bottom: 18px;
@@ -53,7 +56,11 @@
             
         }
         .footer{
-            margin: 4px 0;
+            display: flex;
+            box-sizing: border-box;
+            padding: 8px;
+            width: 240px;
+            align-self: center;
         }
     }
 

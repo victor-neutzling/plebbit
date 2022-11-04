@@ -29,5 +29,12 @@
             margin-top: 24px;
             width: 120px;
         }
+        p{
+            justify-self: flex-end;
+            a{
+                cursor: pointer;
+                color: rgb(255, 123, 0);
+            }
+        }
     }
 }

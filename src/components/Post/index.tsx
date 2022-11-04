@@ -10,9 +10,9 @@ export default function Post(props: IPost) {
     return (
         <div className={styles.post}>
             <div className={styles.sidebar}>
-                <Button>uv</Button>
+                <Button color="green">uv</Button>
                 {props.points}
-                <Button>dv</Button>
+                <Button color="red">dv</Button>
                 {/* points, up and downvote btn goes here */}
             </div>
             <div className={styles.maincontent}>

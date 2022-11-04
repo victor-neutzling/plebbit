@@ -53,6 +53,7 @@ export default function Login() {
                     <div className={styles.buttonWrapper}>
                         <Button onClick={handleSubmit}>Submit</Button>
                     </div>
+                <p>don't have an account? <a onClick={()=>{navigate("/register")}}>register</a></p>
                 </form>
             </div>
     </>

@@ -72,6 +72,7 @@ export default function Register() {
                     <div className={styles.buttonWrapper}>
                         <Button onClick={handleSubmit}>Submit</Button>
                     </div>
+                    <p>already have an account? <a onClick={()=>{navigate("/login")}}>log in</a></p>
                 </form>
             </div>
         </>
