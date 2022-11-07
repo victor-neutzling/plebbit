@@ -21,7 +21,8 @@ export default function NewPost() {
         event.preventDefault()
 
         if(image)
-        FirebaseConnection.postImage(image,setImageURL).then(()=>{
+        FirebaseConnection.postImage(image).then((res:any)=>{
+            setImageURL(res)
         })
     }
     

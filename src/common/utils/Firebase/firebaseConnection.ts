@@ -38,6 +38,7 @@ export default class FirebaseConnection {
     static postCollectionRef: any;
     static userCollectionRef: any;
 
+    //creates new user on firebase auth, returns a promise
     public static signUp(email: string, password: string) {
         return firebase
             .auth()
@@ -53,6 +54,8 @@ export default class FirebaseConnection {
                 console.log(err.message);
             });
     }
+
+    //login, returns a promise
     public static signIn(email: string, password: string) {
         return firebase
             .auth()
@@ -68,6 +71,8 @@ export default class FirebaseConnection {
                 console.log(err.message);
             });
     }
+
+    //logout, returns a promise
     public static signOut() {
         return firebase
             .auth()
@@ -81,15 +86,15 @@ export default class FirebaseConnection {
             });
     }
 
-    //sends image to bucket, and uses setImageURL from post component to gather the url
-    public static postImage(image: any, setter: any) {
+    //sends image to bucket, returns a promise with the image's url
+    public static postImage(image: any) {
         const imageURL = `images/${image.name + v4()}`;
         const imageRef = ref(this.storage, imageURL);
 
         return uploadBytes(imageRef, image)
             .then((res) => {
                 getDownloadURL(imageRef).then((res) => {
-                    setter(res);
+                    return(res)
                 });
             })
             .catch((err) => {
@@ -97,28 +102,18 @@ export default class FirebaseConnection {
                 console.log(err.message);
             });
     }
-
-    //sends image to bucket but doesn't set an URL
-    public static postImageWithoutSetting(image: any) {
-        const imageURL = `images/${image.name + v4()}`;
-        const imageRef = ref(this.storage, imageURL);
-
-        return uploadBytes(imageRef, image)
-            .then((res) => {})
-            .catch((err) => {
-                console.log(err.code);
-                console.log(err.message);
-            });
-    }
-    public static getPosts(setter:any) {
+    //gets all posts from database
+    public static getPosts() {
         return getDocs(this.postCollectionRef).then((data) => {
             let result = data.docs.map((doc:any) => ({
                 ...doc.data(),
                 id: doc.id,
             }));
-            setter(result.reverse())
+            return result.reverse()
         });
     }
+
+    //adds a post to the database, returns a promise
     public static createPost(postData:IPost){
         return addDoc(this.postCollectionRef,{
             authorEmail: postData.authorEmail,
@@ -130,6 +125,8 @@ export default class FirebaseConnection {
 
         })
     }
+
+    //gets author of the post by id, returns a promise
     public static getAuthorByEmail(email:string){
         const q = query(this.userCollectionRef, where("email", "==", email));
         return getDocs(q).then((data)=>{
@@ -147,6 +144,16 @@ export default class FirebaseConnection {
             uid: uid,
             name: username,
             email: email
+        })
+    }
+    public static getPostByID(id:string){
+        const q = query(this.postCollectionRef, where("id", "==", id));
+        return getDocs(q).then((data)=>{
+            let result = data.docs.map((doc:any)=>({
+                ...doc.data(),
+                id: doc.id
+            }))
+            return result
         })
     }
 }
