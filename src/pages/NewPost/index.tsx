@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { v4 } from 'uuid'
+import IComment from '../../common/types/Comment'
 import IPost from '../../common/types/Post'
 import FirebaseConnection from '../../common/utils/Firebase/firebaseConnection'
 import Button from '../../components/Button'
@@ -12,18 +14,31 @@ export default function NewPost() {
     const[image,setImage] = useState(null)
     const[imageURL,setImageURL] = useState('')
     const[post,setPost] = useState<IPost>({} as IPost)
+    
+    const navigate = useNavigate()
 
     function uploadImage(event:any){
         event.preventDefault()
 
         if(image)
-        FirebaseConnection.postImage(image,setImageURL)
+        FirebaseConnection.postImage(image,setImageURL).then(()=>{
+        })
     }
-
+    
     useEffect(()=>{
         if(!imageURL) return;
-
-        console.log(imageURL)
+        
+        FirebaseConnection.createPost({
+            authorEmail: JSON.parse(localStorage.getItem('user') as string).email,
+            comments: [{}] as IComment[],
+            content: imageURL,
+            id: v4(),
+            date: "", // unnecessary
+            points: 1,
+            title: title,
+        }).then(()=>{
+            navigate('/')
+        })
 
     },[imageURL])
 

@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { isPropertyAccessExpression } from "typescript";
 import IPost from "../../common/types/Post";
 import Button from "../Button";
 import styles from "./Post.module.scss";
 
 export default function Post(props: IPost) {
+    const[authorName, setAuthorName] = useState('')
     
-    
+    useEffect(()=>{
+        if(typeof props.authorEmail == "string"){
+            setAuthorName(props.authorEmail)
+        }else{
+            props.authorEmail.then(x => setAuthorName(x[0].name))
+        }
+        console.log(props.content)
+    },[])
+
     return (
         <div className={styles.post}>
             <div className={styles.sidebar}>
@@ -17,8 +26,8 @@ export default function Post(props: IPost) {
             </div>
             <div className={styles.maincontent}>
                 <div className={styles.postinfo}>
-                    <h2 className={styles.username}>by: {props.author}</h2>
-                    <h2 className={styles.postdate}>created: {props.date.getDate()}</h2>
+                    <h2 className={styles.username}>by: {authorName }</h2>
+                    <h2 className={styles.postdate}>created: {props.date}</h2>
                 </div>
                 <div className={styles.titleWrapper}>
                     <h1>{props.title}</h1>

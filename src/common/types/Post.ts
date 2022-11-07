@@ -4,8 +4,8 @@ export default interface IPost{
     id: string;
     points: number;
     title: string;
-    author: string;
-    date: Date;
+    authorEmail: string | Promise<any>;
+    date: string;
     content: string;
     comments: IComment[];
 }

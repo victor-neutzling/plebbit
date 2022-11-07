@@ -2,6 +2,7 @@ import { UserCredential } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import React, { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { v4 } from "uuid";
 
 import FirebaseConnection from "../../common/utils/Firebase/firebaseConnection";
 import Button from "../../components/Button";
@@ -18,8 +19,10 @@ export default function Register() {
     function handleSubmit(event: any) {
         event.preventDefault();
         FirebaseConnection.signUp(email, password).then(() => {
-            if(localStorage.getItem('user'))
-            navigate("/");
+            FirebaseConnection.addUser(username, email, v4()).then(()=>{
+                if(localStorage.getItem('user'))
+                navigate("/");
+            })
         });
     }
 
