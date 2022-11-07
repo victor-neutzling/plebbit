@@ -116,7 +116,7 @@ export default class FirebaseConnection {
                 ...doc.data(),
                 id: doc.id,
             }));
-            setter(result)
+            setter(result.reverse())
         });
     }
     public static createPost(postData:IPost){
