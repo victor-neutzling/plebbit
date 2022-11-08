@@ -41,6 +41,10 @@ export default class FirebaseConnection {
             FirebaseConnection.firestore,
             "comment"
         );
+        FirebaseConnection.voteCollectionRef = collection(
+            FirebaseConnection.firestore,
+            "vote"
+        );
     }
     static firestore: any;
     static storage: any;
@@ -49,6 +53,19 @@ export default class FirebaseConnection {
     static postCollectionRef: CollectionReference<DocumentData>;
     static userCollectionRef: CollectionReference<DocumentData>;
     static commentCollectionRef: CollectionReference<DocumentData>;
+    static voteCollectionRef: CollectionReference<DocumentData>;
+
+
+    //use this function instead of getDocs every time to shorten code
+    private static runQuery(q:Query<DocumentData> | CollectionReference<DocumentData>) : Promise<any>{
+        return getDocs(q).then((data) => {
+            let result = data.docs.map((doc: any) => ({
+                ...doc.data(),
+                docID: doc.id
+            }));
+            return result;
+        });
+    }
 
     //creates new user on firebase auth, returns a promise
     public static signUp(email: string, password: string) {
@@ -116,12 +133,7 @@ export default class FirebaseConnection {
     }
     //gets all posts from database, returns a promise with all posts ordered by date of submission
     public static getPosts() {
-        return getDocs(this.postCollectionRef).then((data) => {
-            let result = data.docs.map((doc: any) => ({
-                ...doc.data(),
-            }));
-            return result;
-        });
+        return this.runQuery(this.postCollectionRef)
     }
 
     //adds a post to the database, returns a promise
@@ -139,12 +151,7 @@ export default class FirebaseConnection {
     //gets author of the post by id, returns a promise with an array containing the post author
     public static getAuthorByEmail(email: string) {
         const q = query(this.userCollectionRef, where("email", "==", email));
-        return getDocs(q).then((data) => {
-            let result = data.docs.map((doc: any) => ({
-                ...doc.data(),
-            }));
-            return result;
-        });
+        return this.runQuery(q)
     }
 
     //adds user to database, should be used along with signup. returns promise
@@ -161,23 +168,13 @@ export default class FirebaseConnection {
     //gets post by id, returns promise with an array containing the post
     public static getPostByID(id: string) {
         const q = query(this.postCollectionRef, where("id", "==", id));
-        return getDocs(q).then((data) => {
-            let result = data.docs.map((doc: any) => ({
-                ...doc.data(),
-            }));
-            return result;
-        });
+        return this.runQuery(q)
     }
 
     //gets the comment section for a post based on its id. returns a promise containing an array with the comments.
     public static getCommentsByPostID(id: string) {
         const q = query(this.commentCollectionRef, where("postID", "==", id));
-        return getDocs(q).then((data) => {
-            let result = data.docs.map((doc: any) => ({
-                ...doc.data(),
-            }));
-            return result;
-        });
+        return this.runQuery(q)
     }
 
     //adds comment to database, returns promise
@@ -194,11 +191,13 @@ export default class FirebaseConnection {
     //gets user by id, returns promise with an array containing the user
     public static getUserByID(id:string){
         const q = query(this.userCollectionRef, where("uid", "==", id));
-        return getDocs(q).then((data) => {
-            let result = data.docs.map((doc: any) => ({
-                ...doc.data(),
-            }));
-            return result;
-        });
+        return this.runQuery(q)
+    }
+
+    public static getVoteValue(postID:string, userID:string){
+        const postquery = query(this.voteCollectionRef, where("postID","==",postID))
+        const userquery = query(postquery, where("userID","==",userID))
+
+        return this.runQuery(userquery)
     }
 }

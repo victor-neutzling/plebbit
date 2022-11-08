@@ -13,7 +13,7 @@ export default function Home() {
     let [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        FirebaseConnection.getPosts().then((result:any) => setPosts(result.reverse()));
+        FirebaseConnection.getPosts().then((result:any) => setPosts(result));
     }, []);
 
     return (
