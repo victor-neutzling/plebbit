@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { isPropertyAccessExpression } from "typescript";
 import IPost from "../../common/types/Post";
 import Button from "../Button";
@@ -6,6 +7,7 @@ import styles from "./Post.module.scss";
 
 export default function Post(props: IPost) {
     const[authorName, setAuthorName] = useState('')
+    const navigate = useNavigate()
     
     useEffect(()=>{
         if(typeof props.authorEmail == "string"){
@@ -13,7 +15,7 @@ export default function Post(props: IPost) {
         }else{
             props.authorEmail.then(x => setAuthorName(x[0].name))
         }
-        console.log(props.content)
+
     },[])
 
     return (
@@ -36,7 +38,7 @@ export default function Post(props: IPost) {
                     <img src={props.content} alt={props.title} />
                 </div>
                 <div className={styles.footer}>
-                    <Button>{props.comments.length + " " + "comments"}</Button>
+                    <Button onClick={()=>{navigate(`/post/${props.id}`) }}>{props.comments.length + " " + "comments"}</Button>
                     {/* comments and stuff goes here */}
                 </div>
             </div>

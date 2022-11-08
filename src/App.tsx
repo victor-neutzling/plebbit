@@ -16,10 +16,12 @@ import {
     RouterProvider,
     Route,
     useNavigate,
+    Router,
 } from "react-router-dom";
 import FirebaseConnection from "./common/utils/Firebase/firebaseConnection";
 import Login from "./pages/Login";
 import NewPost from "./pages/NewPost";
+import OpenPost from "./pages/OpenPost";
 
 const app = firebase.initializeApp({
     apiKey: "AIzaSyBBVwUFSJIeXT7FNBk_mZErSTeBVYHXN3w",
@@ -53,6 +55,10 @@ function App() {
         {
             path: "/newpost",
             element: <NewPost />
+        },
+        {
+            path: "/post/:id",
+            element: <OpenPost />
         },
     ]);
 

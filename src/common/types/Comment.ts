@@ -3,4 +3,5 @@ export default interface IComment{
     user: string;
     content: string;
     points: number;
+    postID: string;
 }

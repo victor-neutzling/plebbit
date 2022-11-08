@@ -13,7 +13,7 @@ export default function Home() {
     let [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        FirebaseConnection.getPosts().then((result:any) => setPosts(result));
+        FirebaseConnection.getPosts().then((result:any) => setPosts(result.reverse()));
     }, []);
 
     return (
@@ -21,6 +21,8 @@ export default function Home() {
             <Header />
             <div className={styles.offset}>
                 <Button
+                    color="white"
+                    textColor="black"
                     onClick={() => {
                         if (localStorage.getItem("user")) {
                             navigate("/newpost");

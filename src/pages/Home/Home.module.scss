@@ -4,6 +4,9 @@
     align-items: center;
     .offset{
         margin-top: 60px;
-        width: 240px;
+        width: 700px;
+        button{
+            filter: drop-shadow(0 2px 2px gray)
+        }
     }
 }

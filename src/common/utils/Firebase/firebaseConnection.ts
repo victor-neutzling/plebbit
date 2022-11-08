@@ -12,9 +12,16 @@ import {
     getDocs,
     getFirestore,
     QuerySnapshot,
-    Query, where, addDoc, query, doc
+    Query,
+    where,
+    addDoc,
+    query,
+    doc,
+    CollectionReference,
+    DocumentData,
 } from "firebase/firestore";
 import IPost from "../../types/Post";
+import IComment from "../../types/Comment";
 
 export default class FirebaseConnection {
     constructor(auth: any, firestore: any, app: any) {
@@ -30,13 +37,18 @@ export default class FirebaseConnection {
             FirebaseConnection.firestore,
             "user"
         );
+        FirebaseConnection.commentCollectionRef = collection(
+            FirebaseConnection.firestore,
+            "comment"
+        );
     }
     static firestore: any;
     static storage: any;
     static auth: any;
     static db: any;
-    static postCollectionRef: any;
-    static userCollectionRef: any;
+    static postCollectionRef: CollectionReference<DocumentData>;
+    static userCollectionRef: CollectionReference<DocumentData>;
+    static commentCollectionRef: CollectionReference<DocumentData>;
 
     //creates new user on firebase auth, returns a promise
     public static signUp(email: string, password: string) {
@@ -93,8 +105,8 @@ export default class FirebaseConnection {
 
         return uploadBytes(imageRef, image)
             .then((res) => {
-                getDownloadURL(imageRef).then((res) => {
-                    return(res)
+                return getDownloadURL(imageRef).then((res) => {
+                    return res;
                 });
             })
             .catch((err) => {
@@ -102,58 +114,91 @@ export default class FirebaseConnection {
                 console.log(err.message);
             });
     }
-    //gets all posts from database
+    //gets all posts from database, returns a promise with all posts ordered by date of submission
     public static getPosts() {
         return getDocs(this.postCollectionRef).then((data) => {
-            let result = data.docs.map((doc:any) => ({
+            let result = data.docs.map((doc: any) => ({
                 ...doc.data(),
-                id: doc.id,
             }));
-            return result.reverse()
+            return result;
         });
     }
 
     //adds a post to the database, returns a promise
-    public static createPost(postData:IPost){
-        return addDoc(this.postCollectionRef,{
+    public static createPost(postData: IPost) {
+        return addDoc(this.postCollectionRef, {
             authorEmail: postData.authorEmail,
             content: postData.content,
             date: "",
             id: v4(),
             points: 1,
-            title: postData.title
-
-        })
+            title: postData.title,
+        });
     }
 
-    //gets author of the post by id, returns a promise
-    public static getAuthorByEmail(email:string){
+    //gets author of the post by id, returns a promise with an array containing the post author
+    public static getAuthorByEmail(email: string) {
         const q = query(this.userCollectionRef, where("email", "==", email));
-        return getDocs(q).then((data)=>{
-            let result = data.docs.map((doc:any) => ({
+        return getDocs(q).then((data) => {
+            let result = data.docs.map((doc: any) => ({
                 ...doc.data(),
-                id: doc.id
-            }))
+            }));
             return result;
-        })
+        });
     }
-    public static addUser(username:string, email:string, uid:string){
-        return addDoc(this.userCollectionRef,{
+
+    //adds user to database, should be used along with signup. returns promise
+    public static addUser(username: string, email: string, uid: string) {
+        return addDoc(this.userCollectionRef, {
             created: "",
             karma: 0,
             uid: uid,
             name: username,
-            email: email
+            email: email,
+        });
+    }
+
+    //gets post by id, returns promise with an array containing the post
+    public static getPostByID(id: string) {
+        const q = query(this.postCollectionRef, where("id", "==", id));
+        return getDocs(q).then((data) => {
+            let result = data.docs.map((doc: any) => ({
+                ...doc.data(),
+            }));
+            return result;
+        });
+    }
+
+    //gets the comment section for a post based on its id. returns a promise containing an array with the comments.
+    public static getCommentsByPostID(id: string) {
+        const q = query(this.commentCollectionRef, where("postID", "==", id));
+        return getDocs(q).then((data) => {
+            let result = data.docs.map((doc: any) => ({
+                ...doc.data(),
+            }));
+            return result;
+        });
+    }
+
+    //adds comment to database, returns promise
+    public static addComment(commentData:IComment){
+        return addDoc(this.commentCollectionRef, {
+            authorID: commentData.user,
+            content: commentData.content,
+            id: v4(),
+            postID: commentData.postID,
+            points: commentData.points
         })
     }
-    public static getPostByID(id:string){
-        const q = query(this.postCollectionRef, where("id", "==", id));
-        return getDocs(q).then((data)=>{
-            let result = data.docs.map((doc:any)=>({
+
+    //gets user by id, returns promise with an array containing the user
+    public static getUserByID(id:string){
+        const q = query(this.userCollectionRef, where("uid", "==", id));
+        return getDocs(q).then((data) => {
+            let result = data.docs.map((doc: any) => ({
                 ...doc.data(),
-                id: doc.id
-            }))
-            return result
-        })
+            }));
+            return result;
+        });
     }
 }

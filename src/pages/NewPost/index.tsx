@@ -19,27 +19,27 @@ export default function NewPost() {
 
     function uploadImage(event:any){
         event.preventDefault()
-
+       
         if(image)
         FirebaseConnection.postImage(image).then((res:any)=>{
-            setImageURL(res)
+            FirebaseConnection.createPost({
+                authorEmail: JSON.parse(localStorage.getItem('user') as string).email,
+                comments: [{}] as IComment[],
+                content: res,
+                id: v4(),
+                date: "", // unnecessary
+                points: 1,
+                title: title,
+            }).then(()=>{
+                navigate('/')
+            }).catch((err)=> console.log(err))
         })
     }
     
     useEffect(()=>{
         if(!imageURL) return;
-        
-        FirebaseConnection.createPost({
-            authorEmail: JSON.parse(localStorage.getItem('user') as string).email,
-            comments: [{}] as IComment[],
-            content: imageURL,
-            id: v4(),
-            date: "", // unnecessary
-            points: 1,
-            title: title,
-        }).then(()=>{
-            navigate('/')
-        })
+
+        console.log(123)
 
     },[imageURL])
 
